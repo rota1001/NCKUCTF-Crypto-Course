@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  baby-lea:
+    build: ./
+    volumes:
+      - ./dist:/home/chal:ro
+      - ./xinetd:/etc/xinetd.d/chal:ro
+    ports:
+      - "10005:48763"
