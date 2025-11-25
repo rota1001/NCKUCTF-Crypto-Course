@@ -4,23 +4,23 @@ import random
 from Crypto.Cipher import AES
 import os
 
-def encrypt(key: bytes):
-    x = input("message: ").strip().encode()
+def encrypt(key: bytes, iv: bytes):
+    x = bytes.fromhex(input("message: ").strip())
     if len(x) % 16 != 0:
         print("Not aligned")
         exit(1)
     if b"give me the flag" in x:
         print("Bad Hacker")
         exit(1)
-    cipher = AES.new(key, AES.MODE_ECB)
+    cipher = AES.new(key, AES.MODE_CBC, iv)
     print(cipher.encrypt(x).hex())
 
-def get_flag(key: bytes):
+def get_flag(key: bytes, iv: bytes):
     x = bytes.fromhex(input("cipher: ").strip())
     if len(x) % 16 != 0:
         print("Not aligned")
         exit(1)
-    cipher = AES.new(key, AES.MODE_ECB)
+    cipher = AES.new(key, AES.MODE_CBC, iv)
     if b"give me the flag" not in cipher.decrypt(x):
         print("Something Wrong")
         exit(1)
@@ -29,15 +29,16 @@ def get_flag(key: bytes):
 
 def challenge():
     key = os.urandom(16)
-    for _ in range(2):
+    iv = os.urandom(16)
+    for _ in range(3):
         print("Please input your choice:")
         print("[1] Encrypt")
         print("[2] Get Flag")
         mode = input("> ")
         if "1" in mode:
-            encrypt(key)
+            encrypt(key, iv)
         else:
-            get_flag(key)
+            get_flag(key, iv)
 
     
 
